@@ -1,0 +1,11 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+my-first-app
+my-first-app.exe
+
+# Dependency directories
+vendor/
