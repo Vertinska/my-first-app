@@ -8,6 +8,7 @@ type ProductRepository interface {
     ListProducts(ctx context.Context) ([]Product, error)
     SaveProduct(ctx context.Context, product Product) error
     GetExpensiveProducts(ctx context.Context, minPrice int) ([]Product, error)
+    DeleteProduct(ctx context.Context, id int) error
 }
 
 type Product struct {

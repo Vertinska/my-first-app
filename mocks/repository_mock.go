@@ -41,6 +41,20 @@ func (m *MockProductRepository) EXPECT() *MockProductRepositoryMockRecorder {
 	return m.recorder
 }
 
+// DeleteProduct mocks base method.
+func (m *MockProductRepository) DeleteProduct(ctx context.Context, id int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteProduct", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteProduct indicates an expected call of DeleteProduct.
+func (mr *MockProductRepositoryMockRecorder) DeleteProduct(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteProduct", reflect.TypeOf((*MockProductRepository)(nil).DeleteProduct), ctx, id)
+}
+
 // GetExpensiveProducts mocks base method.
 func (m *MockProductRepository) GetExpensiveProducts(ctx context.Context, minPrice int) ([]repository.Product, error) {
 	m.ctrl.T.Helper()

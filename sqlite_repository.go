@@ -45,14 +45,25 @@ func (r *sqliteRepository) ListProducts(ctx context.Context) ([]repository.Produ
 }
 
 func (r *sqliteRepository) SaveProduct(ctx context.Context, product repository.Product) error {
-    _, err := r.db.ExecContext(ctx,
+    result, err := r.db.ExecContext(ctx,
         "INSERT INTO products (model, company, price) VALUES (?, ?, ?)",
         product.Model, product.Company, product.Price)
-    return err
+    if err != nil {
+        return err
+    }
+
+    id, err := result.LastInsertId()
+    if err != nil {
+        return err
+    }
+    
+    // Обновляем ID в переданной структуре
+    product.ID = int(id)
+    return nil
 }
 
 func (r *sqliteRepository) GetExpensiveProducts(ctx context.Context, minPrice int) ([]repository.Product, error) {
-    rows, err := r.db.QueryContext(ctx, "SELECT id, model, company, price FROM products WHERE price > ?", minPrice)
+    rows, err := r.db.QueryContext(ctx, "SELECT id, model, company, price FROM products WHERE price >= ?", minPrice)
     if err != nil {
         return nil, err
     }
@@ -67,4 +78,22 @@ func (r *sqliteRepository) GetExpensiveProducts(ctx context.Context, minPrice in
         products = append(products, p)
     }
     return products, rows.Err()
+}
+
+func (r *sqliteRepository) DeleteProduct(ctx context.Context, id int) error {
+    result, err := r.db.ExecContext(ctx, "DELETE FROM products WHERE id = ?", id)
+    if err != nil {
+        return err
+    }
+    
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        return err
+    }
+    
+    if rowsAffected == 0 {
+        return fmt.Errorf("product with id %d not found", id)
+    }
+    
+    return nil
 }
